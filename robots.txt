@@ -1,1 +1,3 @@
 User-agent: *
+Disallow:
+Sitemap: https://shiningfeng.github.io/sitemap.xml
