@@ -1,1 +1,105 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>经验 on ShiningFeng's Blog</title><link>https://shiningfeng.github.io/tags/%E7%BB%8F%E9%AA%8C/</link><description>Recent content in 经验 on ShiningFeng's Blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 14 Oct 2023 08:00:00 +0800</lastBuildDate><atom:link href="https://shiningfeng.github.io/tags/%E7%BB%8F%E9%AA%8C/index.xml" rel="self" type="application/rss+xml"/><item><title>Typora 使用技巧：PicGo 图床配置、代码块默认语言、快捷键自定义等</title><link>https://shiningfeng.github.io/posts/typora-skill/</link><pubDate>Sat, 14 Oct 2023 08:00:00 +0800</pubDate><guid>https://shiningfeng.github.io/posts/typora-skill/</guid><description>本篇笔记整理了 Typora 使用过程中的常用技巧，包括如何配置 PicGo + Gitee 图床、更改默认代码语言、自定义快捷键，以及实现图片居中显示等，适用于提高 Markdown 写作效率的用户。</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>经验 on ShiningFeng's Blog</title><link>https://shiningfeng.github.io/tags/%E7%BB%8F%E9%AA%8C/</link><description>Recent content in 经验 on ShiningFeng's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 14 Oct 2023 08:00:00 +0800</lastBuildDate><atom:link href="https://shiningfeng.github.io/tags/%E7%BB%8F%E9%AA%8C/index.xml" rel="self" type="application/rss+xml"/><item><title>Typora 使用技巧：PicGo 图床配置、代码块默认语言、快捷键自定义等</title><link>https://shiningfeng.github.io/posts/typora-skill/</link><pubDate>Sat, 14 Oct 2023 08:00:00 +0800</pubDate><guid>https://shiningfeng.github.io/posts/typora-skill/</guid><description>本篇笔记整理了 Typora 使用过程中的常用技巧，包括如何配置 PicGo + Gitee 图床、更改默认代码语言、自定义快捷键，以及实现图片居中显示等，适用于提高 Markdown 写作效率的用户。</description><content:encoded><![CDATA[<h1 id="typora-使用技巧汇总">Typora 使用技巧汇总</h1>
+<p>本文总结了日常使用 Typora 中涉及的几个实用技巧，包括：</p>
+<ul>
+<li>配置 PicGo + Gitee 实现图床自动上传</li>
+<li>修改默认代码块语言</li>
+<li>自定义快捷键</li>
+<li>图片居中显示的写法</li>
+</ul>
+<hr>
+<h2 id="1--picgo--gitee-图床配置指南">1.  PicGo + Gitee 图床配置指南</h2>
+<p>为了让插入的图片自动上传到图床并返回外链，建议使用 PicGo 搭配 Gitee 仓库作为图床。</p>
+<h3 id="11-gitee-图床仓库配置注意事项">1.1 Gitee 图床仓库配置注意事项</h3>
+<ul>
+<li>
+<p>使用用户名而非昵称：例如 Gitee 昵称为 <code>可爱风</code>，但实际用户名为 <code>YOUR NAME</code>，PicGo 中填写时应使用用户名</p>
+</li>
+<li>
+<p>仓库路径格式正确：<code>repo</code> 应为 <code>YOUR NAME/typora_img</code>，不能包含空格或多余斜杠</p>
+</li>
+<li>
+<p><code>branch</code> 填 <code>master</code>，有其他分支也可按需填写</p>
+</li>
+<li>
+<p>图片存放路径 <code>path</code> 建议设置为 <code>img</code> 目录</p>
+</li>
+<li>
+<p>仓库必须设置为公开仓库，否则无法通过外链访问</p>
+</li>
+</ul>
+<h3 id="2-避免-typora-中上传失败的常见原因">2. 避免 Typora 中上传失败的常见原因</h3>
+<ul>
+<li>
+<p>不要勾选 Typora 的“使用相对路径”</p>
+</li>
+<li>
+<p>图片路径推荐使用 <code>![]()</code> 这种标准 Markdown 格式</p>
+</li>
+<li>
+<p>遇到上传报错时，优先检查：</p>
+<ul>
+<li>仓库是否为公开</li>
+<li>图片路径是否设置正确</li>
+<li>是否在 PicGo 中设置为 Gitee 图床并填写正确的 token</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-更改代码块默认语言为-python">2. 更改代码块默认语言为 Python</h2>
+<p>Typora 默认的代码块语言为空，可以修改默认语言：</p>
+<p>具体步骤：</p>
+<ol>
+<li>
+<p>找到 Typora 安装目录（Windows 一般为）：</p>
+<pre tabindex="0"><code>PATH\TO\YPUR\TYPORA\resources\app\app\window
+</code></pre></li>
+<li>
+<p>打开.json文件</p>
+</li>
+<li>
+<p>搜索如下代码片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">S</span><span class="p">.</span><span class="nx">localize</span><span class="p">.</span><span class="nx">getString</span><span class="p">(</span><span class="s2">&#34;code language&#34;</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;&#39;&gt;&lt;/span&gt;&#34;</span><span class="p">,</span><span class="nx">n</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">textContent</span><span class="o">=</span><span class="nx">t</span><span class="o">||</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nx">t</span><span class="o">=</span><span class="nx">n</span><span class="p">,</span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">insertChildAtIndex</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span></code></pre></div></li>
+<li>
+<p>修改为：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">S</span><span class="p">.</span><span class="nx">localize</span><span class="p">.</span><span class="nx">getString</span><span class="p">(</span><span class="s2">&#34;code language&#34;</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;&#39;&gt;&lt;/span&gt;&#34;</span><span class="p">,</span><span class="nx">n</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">textContent</span><span class="o">=</span><span class="nx">t</span><span class="o">||</span><span class="s2">&#34;python&#34;</span><span class="p">,</span><span class="nx">t</span><span class="o">=</span><span class="nx">n</span><span class="p">,</span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">insertChildAtIndex</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span></code></pre></div></li>
+</ol>
+<p>保存后重新启动 Typora，默认语言即为 <code>python</code>。</p>
+<hr>
+<h2 id="3-自定义快捷键配置">3. 自定义快捷键配置</h2>
+<p>Typora 支持通过配置 JSON 文件来自定义快捷键。</p>
+<h3 id="1-打开快捷键配置文件">1. 打开快捷键配置文件</h3>
+<p>可在官网说明文档中查找路径，也可以在菜单栏中打开：菜单 → 偏好设置 → 通用 → 快捷键  → 自定义快捷键</p>
+<h3 id="2-个人配置内容">2. 个人配置内容</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl">  <span class="s2">&#34;keyBinding&#34;</span><span class="err">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// for example: 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// &#34;Always on Top&#34;: &#34;Ctrl+Shift+P&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// All other options are the menu items &#39;text label&#39; displayed from each typora menu
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nt">&#34;Heading 1&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Heading 2&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Heading 3&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Heading 4&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+4&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Heading 5&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+5&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Heading 6&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+6&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Paragraph&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Ordered List&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+I&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Unordered List&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+U&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Task List&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+Y&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Insert Image&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+P&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Outline&#34;</span><span class="p">:</span> <span class="s2">&#34;Alt+1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Articles&#34;</span><span class="p">:</span> <span class="s2">&#34;Alt+2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;File Tree&#34;</span><span class="p">:</span> <span class="s2">&#34;Alt+3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Code Fences&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+C&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Insert Table&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+Shift+T&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;Strike&#34;</span><span class="p">:</span> <span class="s2">&#34;Ctrl+T&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span><span class="err">,</span>
+</span></span></code></pre></div><hr>
+<h2 id="3-图片居中显示方法">3. 图片居中显示方法</h2>
+<p>在 Markdown 中居中图片需要用到原始 HTML 标签，格式如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;text-align:center&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;你的图片地址&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;图片描述&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p>Typora 支持原始 HTML 渲染，因此该方法在预览中也能正常显示。</p>
+<hr>
+]]></content:encoded></item></channel></rss>
