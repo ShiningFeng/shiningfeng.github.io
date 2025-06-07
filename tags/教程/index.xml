@@ -622,4 +622,144 @@ notepad .github\workflows\deploy.yml
 <li>粘贴代码并保存</li>
 <li>回到 Word，运行宏 <code>CleanUpAndSeparateText</code></li>
 </ol>
+]]></content:encoded></item><item><title>从 Excel 导入 Anki：批量制作卡片的完整指南</title><link>https://shiningfeng.github.io/posts/excel2anki/</link><pubDate>Sat, 15 Mar 2025 08:00:00 +0800</pubDate><guid>https://shiningfeng.github.io/posts/excel2anki/</guid><description>一文教你如何从 Excel 批量导入选择题至 Anki，包含前缀添加、字段清理、CSV 导出与模板导入等详细步骤。</description><content:encoded><![CDATA[<p>使用 Anki 记忆工具时，很多人希望批量导入卡片，尤其是已有的 Excel 题库。本文将从 Excel 数据准备、字段清洗，到 Anki 模板配置、导入映射，手把手教你完成批量制卡。</p>
+<hr>
+<h2 id="1-excel-数据准备">1. Excel 数据准备</h2>
+<h3 id="1-1-字段规划以选择题为例">1. 1 字段规划（以选择题为例）</h3>
+<table>
+  <thead>
+      <tr>
+          <th>列号</th>
+          <th>内容说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>B</td>
+          <td>问题</td>
+      </tr>
+      <tr>
+          <td>C~F</td>
+          <td>选项 A/B/C/D</td>
+      </tr>
+      <tr>
+          <td>G</td>
+          <td>正确答案</td>
+      </tr>
+      <tr>
+          <td>H</td>
+          <td>解析（可选）</td>
+      </tr>
+  </tbody>
+</table>
+<p>建议每列对应 Anki 中的一个字段，方便后续映射。</p>
+<hr>
+<h3 id="12-批量添加选项前缀">1.2 批量添加选项前缀</h3>
+<p>为指定列 <code>C/D/E/F</code> 的文本内容自动添加字母前缀  <code>A./B./C./D.</code>，提高排版一致性。使用如下 VBA 宏：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vb" data-lang="vb"><span class="line"><span class="cl"><span class="n">Attribute</span> <span class="n">VB_Name</span> <span class="o">=</span> <span class="s">&#34;AddAlphaHeader&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">Sub</span> <span class="nf">AddCorrectPrefixes</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Dim</span> <span class="n">ws</span> <span class="ow">As</span> <span class="n">Worksheet</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Dim</span> <span class="n">lastRow</span> <span class="ow">As</span> <span class="kt">Long</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Dim</span> <span class="n">i</span> <span class="ow">As</span> <span class="kt">Long</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c">&#39; 定义工作表
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="k">Set</span> <span class="n">ws</span> <span class="o">=</span> <span class="n">ThisWorkbook</span><span class="p">.</span><span class="n">Sheets</span><span class="p">(</span><span class="s">&#34;Sheet1&#34;</span><span class="p">)</span> <span class="c">&#39; 请根据你的实际表名修改 &#34;Sheet1&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    
+</span></span><span class="line"><span class="cl">    <span class="c">&#39; 找到最后一行
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="n">lastRow</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">ws</span><span class="p">.</span><span class="n">Rows</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span> <span class="s">&#34;B&#34;</span><span class="p">).</span><span class="n">End</span><span class="p">(</span><span class="n">xlUp</span><span class="p">).</span><span class="n">Row</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c">&#39; 遍历每一行，为 C、D、E、F 列添加前缀
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="k">For</span> <span class="n">i</span> <span class="o">=</span> <span class="n">5</span> <span class="k">To</span> <span class="n">lastRow</span> <span class="c">&#39; 假设从第5行开始，需根据实际情况修改
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>        <span class="k">If</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;C&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">&lt;&gt;</span> <span class="s">&#34;&#34;</span> <span class="k">Then</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;C&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">=</span> <span class="s">&#34;A. &#34;</span> <span class="o">&amp;</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;C&#34;</span><span class="p">).</span><span class="n">Value</span>
+</span></span><span class="line"><span class="cl">        <span class="k">If</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;D&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">&lt;&gt;</span> <span class="s">&#34;&#34;</span> <span class="k">Then</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;D&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">=</span> <span class="s">&#34;B. &#34;</span> <span class="o">&amp;</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;D&#34;</span><span class="p">).</span><span class="n">Value</span>
+</span></span><span class="line"><span class="cl">        <span class="k">If</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;E&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">&lt;&gt;</span> <span class="s">&#34;&#34;</span> <span class="k">Then</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;E&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">=</span> <span class="s">&#34;C. &#34;</span> <span class="o">&amp;</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;E&#34;</span><span class="p">).</span><span class="n">Value</span>
+</span></span><span class="line"><span class="cl">        <span class="k">If</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;F&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">&lt;&gt;</span> <span class="s">&#34;&#34;</span> <span class="k">Then</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;F&#34;</span><span class="p">).</span><span class="n">Value</span> <span class="o">=</span> <span class="s">&#34;D. &#34;</span> <span class="o">&amp;</span> <span class="n">ws</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#34;F&#34;</span><span class="p">).</span><span class="n">Value</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Next</span> <span class="n">i</span>
+</span></span><span class="line"><span class="cl"><span class="k">End</span> <span class="k">Sub</span>
+</span></span></code></pre></div><p><strong>提示</strong>：根据实际的 Excel 文件，适当修改宏中“工作表名称”和循环起始行。</p>
+<hr>
+<h3 id="13-清理无效字符">1.3 清理无效字符</h3>
+<p>有些题干或选项前会有中文标点或空格，可以使用如下宏清除开头杂字符：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vb" data-lang="vb"><span class="line"><span class="cl"><span class="n">Attribute</span> <span class="n">VB_Name</span> <span class="o">=</span> <span class="s">&#34;SanitizeLead&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">Function</span> <span class="nf">CleanText</span><span class="p">(</span><span class="n">cell</span> <span class="ow">As</span> <span class="n">Range</span><span class="p">)</span> <span class="ow">As</span> <span class="kt">String</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Dim</span> <span class="n">str</span> <span class="ow">As</span> <span class="kt">String</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Dim</span> <span class="n">i</span> <span class="ow">As</span> <span class="kt">Integer</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Dim</span> <span class="n">symbols</span> <span class="ow">As</span> <span class="kt">String</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c">&#39; 需要删除的符号
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="n">symbols</span> <span class="o">=</span> <span class="s">&#34;、，。．.&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">str</span> <span class="o">=</span> <span class="n">cell</span><span class="p">.</span><span class="n">Value</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c">&#39; 删除开头的空格和指定符号
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="k">Do</span> <span class="k">While</span> <span class="n">Len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">0</span> <span class="ow">And</span> <span class="p">(</span><span class="n">Left</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">1</span><span class="p">)</span> <span class="o">=</span> <span class="s">&#34; &#34;</span> <span class="ow">Or</span> <span class="n">Left</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">ChrW</span><span class="p">(</span><span class="n">12288</span><span class="p">)</span> <span class="ow">Or</span> <span class="n">InStr</span><span class="p">(</span><span class="n">symbols</span><span class="p">,</span> <span class="n">Left</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">str</span> <span class="o">=</span> <span class="n">Mid</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">Loop</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">CleanText</span> <span class="o">=</span> <span class="n">str</span>
+</span></span><span class="line"><span class="cl"><span class="k">End</span> <span class="k">Function</span>
+</span></span></code></pre></div><hr>
+<h2 id="2-导出为-csvutf-8">2. 导出为 CSV（UTF-8）</h2>
+<ol>
+<li>Excel 顶部菜单 → <code>文件 &gt; 另存为</code></li>
+<li>格式选择：<code>CSV UTF-8（逗号分隔）</code></li>
+<li>文件名建议为英文，如 <code>anki_cards.csv</code></li>
+</ol>
+<hr>
+<h2 id="3-anki-设置与导入">3. Anki 设置与导入</h2>
+<h3 id="31-创建新的-note-type笔记类型">3.1 创建新的 Note Type（笔记类型）</h3>
+<ul>
+<li>打开 Anki → <code>Tools &gt; Manage Note Types</code></li>
+<li><code>Add</code> 创建或克隆一个新的类型（如“多选题”）</li>
+<li><code>Fields</code>：添加与 Excel 对应的字段（如 问题、A、B、C、D、正确答案、解析）</li>
+<li><code>Cards</code>：编辑前/背面模板，例如：</li>
+</ul>
+<p><strong>Front Template</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    问题：{{问题}}<span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    {{A}}<span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    {{B}}<span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    {{C}}<span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    {{D}}
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p><strong>Back Template</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">{{FrontSide}}
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">hr</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">正确答案：{{正确答案}}<span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">解析：{{解析}}
+</span></span></code></pre></div><hr>
+<h3 id="32-导入-csv-文件">3.2 导入 CSV 文件</h3>
+<ol>
+<li>打开 Anki → <code>File &gt; Import</code> 选择 <code>.csv</code> 文件，编码确认为 UTF-8</li>
+<li><code>Type</code>：选“多选题”或对应的 Note Type</li>
+<li><code>Deck</code>：选择牌组</li>
+<li><code>Delimiter</code>：选择逗号（CSV）</li>
+<li>设置字段映射：
+<ul>
+<li>B → 问题</li>
+<li>C → A</li>
+<li>D → B</li>
+<li>E → C</li>
+<li>F → D</li>
+<li>G → 正确答案</li>
+<li>H（可选）→ 解析</li>
+</ul>
+</li>
+<li>完成导入后点击 “Import”</li>
+</ol>
+<hr>
+<h2 id="4-预览与检查">4. 预览与检查</h2>
+<ul>
+<li>点击 Browse，选择你刚导入的牌组</li>
+<li>确认每个字段对应正确</li>
+<li>使用卡片预览检查格式是否清晰</li>
+</ul>
+<hr>
+<h2 id="tips--常见问题">Tips &amp; 常见问题</h2>
+<ul>
+<li>若乱码，确认保存时编码为 UTF-8</li>
+<li>多余空行会导入空卡片，导入前请清理数据</li>
+<li>选项顺序建议保持一致，否则模板显示混乱</li>
+<li>若多个字段需要清洗，可在 Excel 中先使用 VBA 批处理</li>
+</ul>
 ]]></content:encoded></item></channel></rss>
